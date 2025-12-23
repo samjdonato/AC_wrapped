@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Album Club Wrapped 2024-2025</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            color: #fff;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        header {
+            text-align: center;
+            padding: 3rem 0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        h1 {
+            font-size: 3.5rem;
+            font-weight: 900;
+            background: linear-gradient(45deg, #ff006e, #8338ec, #3a86ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+        
+        @keyframes glow {
+            from { filter: brightness(1); }
+            to { filter: brightness(1.2); }
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            color: #a8dadc;
+            margin-bottom: 2rem;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        
+        .stat-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        .stat-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: #8338ec;
+        }
+        
+        .member-stats {
+            list-style: none;
+        }
+        
+        .member-stats li {
+            padding: 0.8rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .member-stats li:last-child {
+            border-bottom: none;
+        }
+        
+        .member-name {
+            font-weight: 600;
+            color: #ff006e;
+        }
+        
+        .member-count {
+            font-size: 1.2rem;
+            font-weight: 900;
+        }
+        
+        .chart-container {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            position: relative;
+            height: 400px;
+        }
+        .chart-container h3 {
+            margin-bottom: 1rem;
+        }
+        
+        .superlatives {
+            background: linear-gradient(135deg, rgba(255, 0, 110, 0.2), rgba(131, 56, 236, 0.2));
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 3rem;
+            text-align: center;
+        }
+        
+        .superlatives h2 {
+            font-size: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .award {
+            display: inline-block;
+            margin: 1rem;
+            padding: 1.5rem 2rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            border: 2px solid #ff006e;
+            transition: all 0.3s ease;
+        }
+        
+        .award:hover {
+            background: rgba(255, 0, 110, 0.2);
+            transform: scale(1.05);
+        }
+        
+        .award-title {
+            font-size: 0.9rem;
+            color: #8338ec;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+        }
+        
+        .award-winner {
+            font-size: 1.5rem;
+            font-weight: 900;
+            color: #fff;
+        }
+        
+        .award-detail {
+            font-size: 0.9rem;
+            color: #a8dadc;
+            margin-top: 0.5rem;
+        }
+        
+        .timeline {
+            position: relative;
+            padding: 2rem 0;
+        }
+        
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(180deg, #ff006e, #8338ec, #3a86ff);
+            transform: translateX(-50%);
+        }
+        
+        .timeline-item {
+            position: relative;
+            margin-bottom: 2rem;
+            width: 45%;
+        }
+        
+        .timeline-item:nth-child(odd) {
+            margin-left: auto;
+            text-align: left;
+        }
+        
+        .timeline-item:nth-child(even) {
+            text-align: right;
+        }
+        
+        .timeline-content {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1.5rem;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .timeline-date {
+            font-weight: 900;
+            color: #ff006e;
+            margin-bottom: 0.5rem;
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+            
+            .timeline::before {
+                left: 20px;
+            }
+            
+            .timeline-item {
+                width: calc(100% - 40px);
+                margin-left: 40px !important;
+                text-align: left !important;
+            }
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            font-size: 1.5rem;
+        }
+        
+        .error {
+            background: rgba(255, 0, 0, 0.2);
+            padding: 2rem;
+            border-radius: 15px;
+            text-align: center;
+            margin: 2rem 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Album Club Wrapped</h1>
+            <p class="subtitle">2024-2025 Musical Journey</p>
+        </header>
+        
+        <div id="content">
+            <div class="loading">Loading your wrapped data...</div>
+        </div>
+    </div>
+    
+    <script>
+        // Load the stats data
+        // IMPORTANT: if you open this file as file://, fetch() is often blocked by the browser.
+        // Serve the folder instead (e.g. `python3 -m http.server 8000`) and open http://localhost:8000/vis.html
+        fetch('./wrapped_stats.json', { cache: 'no-store' })
+            .then(async (response) => {
+                if (!response.ok) {
+                    // Try to surface useful info
+                    const text = await response.text().catch(() => '');
+                    throw new Error(`HTTP ${response.status} ${response.statusText}${text ? ` — ${text.slice(0, 200)}` : ''}`);
+                }
+                return response.json();
+            })
+            .then((data) => {
+                console.log('Loaded wrapped_stats.json:', data);
+                renderWrapped(data);
+            })
+            .catch((error) => {
+                console.error('Error loading wrapped_stats.json:', error);
+                document.getElementById('content').innerHTML =
+                    `<div class="error">Error loading data: ${String(error.message || error)}<br><br>
+                    1) Confirm wrapped_stats.json exists next to vis.html<br>
+                    2) Serve the folder: <code>python3 -m http.server 8000</code><br>
+                    3) Open: <code>http://localhost:8000/vis.html</code></div>`;
+            });
+        
+        function renderWrapped(stats) {
+            const content = document.getElementById('content');
+            if (!stats || typeof stats !== 'object') {
+                content.innerHTML = '<div class="error">wrapped_stats.json loaded but did not contain an object.</div>';
+                return;
+            }
+            content.innerHTML = '';
+            
+            // Member Statistics Section
+            const memberSection = createMemberSection(stats.member_stats);
+            content.appendChild(memberSection);
+            
+            // Genre Chart
+            const genreChart = createGenreChart(stats.genre_stats);
+            content.appendChild(genreChart);
+            
+            // Decade Chart
+            const decadeChart = createDecadeChart(stats.decade_stats);
+            content.appendChild(decadeChart);
+            
+            // Superlatives
+            const superlatives = createSuperlatives(stats.superlatives);
+            content.appendChild(superlatives);
+            
+            // Evolution Timeline
+            const timeline = createTimeline(stats.club_evolution);
+            content.appendChild(timeline);
+        }
+        
+        function createMemberSection(memberStats) {
+            const section = document.createElement('div');
+            section.className = 'stats-grid';
+            
+            // Member Selection Counts
+            const memberCard = document.createElement('div');
+            memberCard.className = 'stat-card';
+            memberCard.innerHTML = '<h3>🎵 Member Contributions</h3>';
+            
+            const memberList = document.createElement('ul');
+            memberList.className = 'member-stats';
+            
+            Object.entries(memberStats.selection_counts).forEach(([member, count]) => {
+                const li = document.createElement('li');
+                li.innerHTML = `
+                    <span class="member-name">${member}</span>
+                    <span class="member-count">${count} albums</span>
+                `;
+                memberList.appendChild(li);
+            });
+            
+            memberCard.appendChild(memberList);
+            section.appendChild(memberCard);
+            
+            // Genre Preferences
+            const genreCard = document.createElement('div');
+            genreCard.className = 'stat-card';
+            genreCard.innerHTML = '<h3>🎸 Top Genre by Member</h3>';
+            
+            const genreList = document.createElement('ul');
+            genreList.className = 'member-stats';
+            
+            Object.entries(memberStats.genre_preferences || {}).forEach(([member, prefs]) => {
+                if (prefs.top_genre) {
+                    const li = document.createElement('li');
+                    li.innerHTML = `
+                        <span class="member-name">${member}</span>
+                        <span>${prefs.top_genre[0]} (${prefs.top_genre[1]})</span>
+                    `;
+                    genreList.appendChild(li);
+                }
+            });
+            
+            genreCard.appendChild(genreList);
+            section.appendChild(genreCard);
+            
+            return section;
+        }
+        
+        function createGenreChart(genreStats) {
+            const container = document.createElement('div');
+            container.className = 'chart-container';
+            container.innerHTML = '<h3>🎼 Genre Distribution</h3>';
+            
+            const canvas = document.createElement('canvas');
+            canvas.id = 'genreChart';
+            container.appendChild(canvas);
+            
+            setTimeout(() => {
+                const ctx = canvas.getContext('2d');
+                const topGenres = genreStats.top_genres.slice(0, 8);
+                
+                new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: topGenres.map(g => g[0]),
+                        datasets: [{
+                            data: topGenres.map(g => g[1]),
+                            backgroundColor: [
+                                '#ff006e', '#8338ec', '#3a86ff', '#06ffa5',
+                                '#ffbe0b', '#fb5607', '#c77dff', '#7209b7'
+                            ],
+                            borderWidth: 0
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'right',
+                                labels: {
+                                    color: '#fff',
+                                    padding: 15,
+                                    font: { size: 14 }
+                                }
+                            }
+                        }
+                    }
+                });
+            }, 100);
+            
+            return container;
+        }
+        
+        function createDecadeChart(decadeStats) {
+            const container = document.createElement('div');
+            container.className = 'chart-container';
+            container.innerHTML = '<h3>📅 Albums by Decade</h3>';
+            
+            const canvas = document.createElement('canvas');
+            canvas.id = 'decadeChart';
+            container.appendChild(canvas);
+            
+            setTimeout(() => {
+                const ctx = canvas.getContext('2d');
+                const decades = Object.keys(decadeStats).sort();
+                const counts = decades.map(d => decadeStats[d]);
+                
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: decades,
+                        datasets: [{
+                            label: 'Albums',
+                            data: counts,
+                            backgroundColor: 'rgba(131, 56, 236, 0.7)',
+                            borderColor: '#8338ec',
+                            borderWidth: 2
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: { color: '#fff' },
+                                grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                            },
+                            x: {
+                                ticks: { color: '#fff' },
+                                grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                            }
+                        }
+                    }
+                });
+            }, 100);
+            
+            return container;
+        }
+        
+        function createSuperlatives(superlatives) {
+            const section = document.createElement('div');
+            section.className = 'superlatives';
+            section.innerHTML = '<h2>🏆 Album Club Awards</h2>';
+            
+            const awards = {
+                most_eclectic: { title: 'Most Eclectic', icon: '🌈' },
+                time_traveler: { title: 'Time Traveler', icon: '⏰' },
+                vintage_collector: { title: 'Vintage Collector', icon: '📻' },
+                trendsetter: { title: 'Trendsetter', icon: '✨' }
+            };
+            
+            Object.entries(superlatives).forEach(([key, value]) => {
+                if (awards[key]) {
+                    const award = document.createElement('div');
+                    award.className = 'award';
+                    award.innerHTML = `
+                        <div class="award-title">${awards[key].icon} ${awards[key].title}</div>
+                        <div class="award-winner">${value[0]}</div>
+                        <div class="award-detail">${formatAwardDetail(key, value[1])}</div>
+                    `;
+                    section.appendChild(award);
+                }
+            });
+            
+            return section;
+        }
+        
+        function formatAwardDetail(key, value) {
+            switch(key) {
+                case 'most_eclectic':
+                    return `${value} different genres`;
+                case 'time_traveler':
+                    return `${Math.round(value)} year span`;
+                case 'vintage_collector':
+                case 'trendsetter':
+                    return `Avg year: ${Math.round(value)}`;
+                default:
+                    return '';
+            }
+        }
+        
+        function createTimeline(evolution) {
+            const section = document.createElement('div');
+            section.innerHTML = '<h2 style="text-align: center; margin-bottom: 2rem;">📍 Club Evolution</h2>';
+            
+            const timeline = document.createElement('div');
+            timeline.className = 'timeline';
+            
+            // Show last 6 months
+            evolution.slice(-6).forEach((month, index) => {
+                const item = document.createElement('div');
+                item.className = 'timeline-item';
+                item.innerHTML = `
+                    <div class="timeline-content">
+                        <div class="timeline-date">${month.date}</div>
+                        <div>${month.num_albums} albums</div>
+                        <div style="font-size: 0.9rem; color: #a8dadc;">
+                            ${month.participants.join(', ')}
+                        </div>
+                    </div>
+                `;
+                timeline.appendChild(item);
+            });
+            
+            section.appendChild(timeline);
+            return section;
+        }
+    </script>
+</body>
+</html>

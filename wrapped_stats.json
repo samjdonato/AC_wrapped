@@ -1,0 +1,357 @@
+{
+  "member_stats": {
+    "selection_counts": {
+      "Sam": 16,
+      "Steph": 16,
+      "Glenn": 16,
+      "Claire": 15,
+      "Jamie": 10
+    },
+    "genre_preferences": {
+      "Sam": {
+        "top_genre": [
+          "Rock",
+          4
+        ],
+        "genre_diversity": 17
+      },
+      "Steph": {
+        "top_genre": [
+          "Rock",
+          3
+        ],
+        "genre_diversity": 19
+      },
+      "Glenn": {
+        "top_genre": [
+          "Alternative Indie",
+          3
+        ],
+        "genre_diversity": 15
+      },
+      "Claire": {
+        "top_genre": [
+          "Indie Rock",
+          3
+        ],
+        "genre_diversity": 18
+      },
+      "Jamie": {
+        "top_genre": [
+          "Art Rock",
+          3
+        ],
+        "genre_diversity": 16
+      }
+    },
+    "era_preferences": {
+      "Sam": {
+        "avg_release_year": 2006.3125,
+        "oldest_pick": 1965,
+        "newest_pick": 2025,
+        "year_span": 60
+      },
+      "Steph": {
+        "avg_release_year": 1992.625,
+        "oldest_pick": 1960,
+        "newest_pick": 2025,
+        "year_span": 65
+      },
+      "Glenn": {
+        "avg_release_year": 2007.6875,
+        "oldest_pick": 1969,
+        "newest_pick": 2025,
+        "year_span": 56
+      },
+      "Claire": {
+        "avg_release_year": 2013.0,
+        "oldest_pick": 1960,
+        "newest_pick": 2025,
+        "year_span": 65
+      },
+      "Jamie": {
+        "avg_release_year": 2004.1,
+        "oldest_pick": 1975,
+        "newest_pick": 2025,
+        "year_span": 50
+      }
+    }
+  },
+  "genre_stats": {
+    "top_genres": [
+      [
+        "Rock",
+        10
+      ],
+      [
+        "Jazz",
+        6
+      ],
+      [
+        "Alternative Indie",
+        6
+      ],
+      [
+        "Indie Rock",
+        5
+      ],
+      [
+        "Psychedelic Rock",
+        5
+      ],
+      [
+        "Holiday",
+        5
+      ],
+      [
+        "R&B",
+        4
+      ],
+      [
+        "Bluegrass",
+        3
+      ],
+      [
+        "Country",
+        3
+      ],
+      [
+        "Hip-Hop",
+        3
+      ]
+    ],
+    "total_unique_genres": 54,
+    "monthly_diversity": {
+      "December": 4,
+      "January": 7,
+      "February": 11,
+      "March": 18,
+      "April": 8,
+      "May": 9,
+      "June": 6,
+      "July": 7,
+      "August": 5,
+      "September": 7,
+      "October": 6,
+      "November": 4
+    }
+  },
+  "decade_stats": {
+    "1960s": 8,
+    "1970s": 10,
+    "1980s": 2,
+    "1990s": 4,
+    "2000s": 5,
+    "2010s": 12,
+    "2020s": 32
+  },
+  "album_age_stats": {
+    "avg_album_age": 20.315068493150687,
+    "median_album_age": 12.0,
+    "oldest_album": {
+      "name": "The Nutcracker Suite",
+      "artist": "Duke Ellington",
+      "year": 1960
+    },
+    "newest_album": {
+      "name": "Ballonerism",
+      "artist": "Mac Miller",
+      "year": 2025
+    }
+  },
+  "monthly_patterns": {
+    "albums_per_month": {
+      "April": 5,
+      "August": 5,
+      "December": 8,
+      "February": 8,
+      "January": 8,
+      "July": 5,
+      "June": 5,
+      "March": 9,
+      "May": 5,
+      "November": 5,
+      "October": 5,
+      "September": 5
+    },
+    "avg_selections_per_person": {
+      "December": 1.6,
+      "January": 2.0,
+      "February": 2.0,
+      "March": 1.8,
+      "April": 1.0,
+      "May": 1.0,
+      "June": 1.0,
+      "July": 1.0,
+      "August": 1.0,
+      "September": 1.0,
+      "October": 1.0,
+      "November": 1.0
+    }
+  },
+  "artist_stats": {
+    "total_unique_artists": 72,
+    "repeat_artists": {
+      "Makaya McCraven": 2
+    }
+  },
+  "superlatives": {
+    "most_eclectic": [
+      "Steph",
+      19
+    ],
+    "time_traveler": [
+      "Steph",
+      65.0
+    ],
+    "vintage_collector": [
+      "Steph",
+      1992.625
+    ],
+    "trendsetter": [
+      "Claire",
+      2013.0
+    ]
+  },
+  "club_evolution": [
+    {
+      "date": "December 2024",
+      "participants": [
+        "Sam",
+        "Steph",
+        "Glenn"
+      ],
+      "num_albums": 3
+    },
+    {
+      "date": "January 2025",
+      "participants": [
+        "Steph",
+        "Glenn",
+        "Claire",
+        "Sam"
+      ],
+      "num_albums": 8
+    },
+    {
+      "date": "February 2025",
+      "participants": [
+        "Sam",
+        "Steph",
+        "Glenn",
+        "Claire"
+      ],
+      "num_albums": 8
+    },
+    {
+      "date": "March 2025",
+      "participants": [
+        "Jamie",
+        "Claire",
+        "Glenn",
+        "Steph",
+        "Sam"
+      ],
+      "num_albums": 9
+    },
+    {
+      "date": "April 2025",
+      "participants": [
+        "Jamie",
+        "Sam",
+        "Steph",
+        "Claire",
+        "Glenn"
+      ],
+      "num_albums": 5
+    },
+    {
+      "date": "May 2025",
+      "participants": [
+        "Sam",
+        "Glenn",
+        "Steph",
+        "Claire",
+        "Jamie"
+      ],
+      "num_albums": 5
+    },
+    {
+      "date": "June 2025",
+      "participants": [
+        "Jamie",
+        "Glenn",
+        "Sam",
+        "Steph",
+        "Claire"
+      ],
+      "num_albums": 5
+    },
+    {
+      "date": "July 2025",
+      "participants": [
+        "Claire",
+        "Steph",
+        "Sam",
+        "Glenn",
+        "Jamie"
+      ],
+      "num_albums": 5
+    },
+    {
+      "date": "August 2025",
+      "participants": [
+        "Jamie",
+        "Glenn",
+        "Sam",
+        "Steph",
+        "Claire"
+      ],
+      "num_albums": 5
+    },
+    {
+      "date": "September 2025",
+      "participants": [
+        "Claire",
+        "Glenn",
+        "Steph",
+        "Jamie",
+        "Sam"
+      ],
+      "num_albums": 5
+    },
+    {
+      "date": "October 2025",
+      "participants": [
+        "Sam",
+        "Claire",
+        "Glenn",
+        "Jamie",
+        "Steph"
+      ],
+      "num_albums": 5
+    },
+    {
+      "date": "November 2025",
+      "participants": [
+        "Claire",
+        "Steph",
+        "Sam",
+        "Glenn",
+        "Jamie"
+      ],
+      "num_albums": 5
+    },
+    {
+      "date": "December 2025",
+      "participants": [
+        "Glenn",
+        "Sam",
+        "Claire",
+        "Jamie",
+        "Steph"
+      ],
+      "num_albums": 5
+    }
+  ]
+}
