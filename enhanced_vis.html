@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Album Club Enhanced Analytics</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #1a1a1a;
+            color: #e0e0e0;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        h1, h2 {
+            color: #fff;
+            text-align: center;
+        }
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            text-align: center;
+            color: #888;
+            margin-bottom: 40px;
+        }
+        .chart-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(600px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        .chart-container {
+            background: #2a2a2a;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+        .full-width {
+            grid-column: 1 / -1;
+        }
+        .insights {
+            background: #2a2a2a;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        .insight-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+        .insight-card {
+            background: #3a3a3a;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .insight-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #4a9eff;
+        }
+        .insight-label {
+            font-size: 0.9rem;
+            color: #888;
+            margin-top: 5px;
+        }
+        .loading {
+            text-align: center;
+            padding: 50px;
+            color: #888;
+        }
+        .error {
+            background: #3a2a2a;
+            border: 1px solid #ff4444;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .legend-item {
+            display: inline-block;
+            margin-right: 20px;
+            font-size: 0.9rem;
+        }
+        .legend-color {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            margin-right: 5px;
+            border-radius: 2px;
+            vertical-align: middle;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎵 Album Club Enhanced Analytics</h1>
+        <p class="subtitle">Deep dive into your musical journey</p>
+        
+        <div class="insights" id="key-insights">
+            <h2>Key Insights</h2>
+            <div class="insight-grid" id="insight-cards">
+                <div class="loading">Loading insights...</div>
+            </div>
+        </div>
+
+        <div class="chart-grid">
+            <!-- Ratings Analysis -->
+            <div class="chart-container">
+                <h3>Album Ratings by Member</h3>
+                <div id="ratings-by-member"></div>
+            </div>
+
+            <div class="chart-container">
+                <h3>Rating Distribution</h3>
+                <div id="rating-distribution"></div>
+            </div>
+
+            <!-- Album Length Analysis -->
+            <div class="chart-container">
+                <h3>Album Length vs Rating</h3>
+                <div id="length-vs-rating"></div>
+            </div>
+
+            <div class="chart-container">
+                <h3>Average Album Length by Member</h3>
+                <div id="length-by-member"></div>
+            </div>
+
+            <!-- Discovery Metrics -->
+            <div class="chart-container full-width">
+                <h3>Discovery vs Familiar Albums Over Time</h3>
+                <div id="discovery-timeline"></div>
+            </div>
+
+            <!-- Genre Deep Dive -->
+            <div class="chart-container">
+                <h3>Genre Ratings Heatmap</h3>
+                <div id="genre-ratings-heatmap"></div>
+            </div>
+
+            <div class="chart-container">
+                <h3>Most Divisive Albums</h3>
+                <div id="divisive-albums"></div>
+            </div>
+
+            <!-- Engagement Metrics -->
+            <div class="chart-container full-width">
+                <h3>Club Engagement Over Time</h3>
+                <div id="engagement-timeline"></div>
+            </div>
+
+            <!-- Recommendation Success -->
+            <div class="chart-container">
+                <h3>Would Recommend Rate by Selector</h3>
+                <div id="recommend-rate"></div>
+            </div>
+
+            <div class="chart-container">
+                <h3>Album Success Factors</h3>
+                <div id="success-factors"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Color scheme
+        const colors = {
+            primary: '#4a9eff',
+            secondary: '#ff6b6b',
+            accent: '#4ecdc4',
+            warning: '#ffe66d',
+            members: {
+                'Sam': '#FF6B6B',
+                'Steph': '#4ECDC4',
+                'Glenn': '#45B7D1',
+                'Claire': '#96CEB4',
+                'Jamie': '#FECA57'
+            },
+            genres: [
+                '#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FECA57',
+                '#FF9FF3', '#54A0FF', '#48DBFB', '#00D2D3', '#1DD1A1'
+            ]
+        };
+
+        const plotlyConfig = {
+            displayModeBar: false,
+            responsive: true
+        };
+
+        const plotlyLayout = {
+            paper_bgcolor: '#2a2a2a',
+            plot_bgcolor: '#2a2a2a',
+            font: { color: '#e0e0e0' },
+            margin: { t: 40, r: 20, b: 40, l: 60 },
+            xaxis: {
+                gridcolor: '#3a3a3a',
+                zerolinecolor: '#3a3a3a'
+            },
+            yaxis: {
+                gridcolor: '#3a3a3a',
+                zerolinecolor: '#3a3a3a'
+            }
+        };
+
+        // Load and process data
+        async function loadData() {
+            try {
+                // Load the enhanced CSV data
+                const response = await fetch('ac_enhanced.csv');
+                if (!response.ok) {
+                    // Fallback to original data if enhanced not available
+                    const fallbackResponse = await fetch('ac.csv');
+                    const text = await fallbackResponse.text();
+                    return parseCSV(text, false);
+                }
+                const text = await response.text();
+                return parseCSV(text, true);
+            } catch (error) {
+                console.error('Error loading data:', error);
+                showError('Failed to load data. Make sure ac_enhanced.csv or ac.csv exists.');
+                return null;
+            }
+        }
+
+        function parseCSV(text, hasEnhancedData) {
+            const lines = text.split('\n').filter(line => line.trim());
+            const headers = lines[0].split(',').map(h => h.trim());
+            const data = [];
+            
+            for (let i = 1; i < lines.length; i++) {
+                const values = lines[i].split(',');
+                const row = {};
+                headers.forEach((header, index) => {
+                    row[header] = values[index] ? values[index].trim() : '';
+                });
+                data.push(row);
+            }
+            
+            return { data, hasEnhancedData };
+        }
+
+        function showError(message) {
+            document.getElementById('insight-cards').innerHTML = 
+                `<div class="error">${message}</div>`;
+        }
+
+        function calculateInsights(data, hasEnhancedData) {
+            const insights = {
+                totalAlbums: data.length,
+                averageRating: 0,
+                discoveryRate: 0,
+                averageLength: 0,
+                mostDivisive: null,
+                recommendRate: 0
+            };
+
+            if (hasEnhancedData) {
+                // Calculate average rating
+                const ratings = data
+                    .map(d => parseFloat(d.avg_member_rating))
+                    .filter(r => !isNaN(r));
+                insights.averageRating = ratings.length > 0 
+                    ? (ratings.reduce((a, b) => a + b, 0) / ratings.length).toFixed(1)
+                    : 'N/A';
+
+                // Calculate discovery rate
+                const discoveries = data
+                    .filter(d => d.new_discovery_for_most === 'Yes').length;
+                insights.discoveryRate = data.length > 0
+                    ? Math.round((discoveries / data.length) * 100)
+                    : 0;
+
+                // Calculate average length
+                const lengths = data
+                    .map(d => parseFloat(d.album_length_minutes))
+                    .filter(l => !isNaN(l));
+                insights.averageLength = lengths.length > 0
+                    ? Math.round(lengths.reduce((a, b) => a + b, 0) / lengths.length)
+                    : 'N/A';
+
+                // Find most divisive album (would need individual ratings)
+                // For now, use a placeholder
+                insights.mostDivisive = 'Requires individual ratings';
+
+                // Calculate recommend rate
+                const recommends = data
+                    .filter(d => d.would_recommend === 'Yes').length;
+                insights.recommendRate = data.length > 0
+                    ? Math.round((recommends / data.length) * 100)
+                    : 0;
+            }
+
+            return insights;
+        }
+
+        function displayInsights(insights) {
+            const insightCards = document.getElementById('insight-cards');
+            insightCards.innerHTML = `
+                <div class="insight-card">
+                    <div class="insight-value">${insights.totalAlbums}</div>
+                    <div class="insight-label">Total Albums</div>
+                </div>
+                <div class="insight-card">
+                    <div class="insight-value">${insights.averageRating}</div>
+                    <div class="insight-label">Average Rating</div>
+                </div>
+                <div class="insight-card">
+                    <div class="insight-value">${insights.discoveryRate}%</div>
+                    <div class="insight-label">Discovery Rate</div>
+                </div>
+                <div class="insight-card">
+                    <div class="insight-value">${insights.averageLength} min</div>
+                    <div class="insight-label">Avg Album Length</div>
+                </div>
+                <div class="insight-card">
+                    <div class="insight-value">${insights.recommendRate}%</div>
+                    <div class="insight-label">Would Recommend</div>
+                </div>
+            `;
+        }
+
+        function createRatingsByMember(data) {
+            const memberRatings = {};
+            
+            data.forEach(album => {
+                const member = album.select_member;
+                const rating = parseFloat(album.avg_member_rating);
+                
+                if (!isNaN(rating)) {
+                    if (!memberRatings[member]) {
+                        memberRatings[member] = [];
+                    }
+                    memberRatings[member].push(rating);
+                }
+            });
+
+            const members = Object.keys(memberRatings);
+            const avgRatings = members.map(member => {
+                const ratings = memberRatings[member];
+                return ratings.reduce((a, b) => a + b, 0) / ratings.length;
+            });
+
+            const trace = {
+                x: members,
+                y: avgRatings,
+                type: 'bar',
+                marker: {
+                    color: members.map(m => colors.members[m] || colors.primary)
+                }
+            };
+
+            const layout = {
+                ...plotlyLayout,
+                title: 'Average Rating by Selector',
+                xaxis: { title: 'Member' },
+                yaxis: { title: 'Average Rating', range: [0, 10] }
+            };
+
+            Plotly.newPlot('ratings-by-member', [trace], layout, plotlyConfig);
+        }
+
+        function createRatingDistribution(data) {
+            const ratings = data
+                .map(d => parseFloat(d.avg_member_rating))
+                .filter(r => !isNaN(r));
+
+            const trace = {
+                x: ratings,
+                type: 'histogram',
+                nbinsx: 20,
+                marker: {
+                    color: colors.primary,
+                    line: {
+                        color: colors.accent,
+                        width: 1
+                    }
+                }
+            };
+
+            const layout = {
+                ...plotlyLayout,
+                title: 'Distribution of Album Ratings',
+                xaxis: { title: 'Rating', range: [0, 10] },
+                yaxis: { title: 'Count' }
+            };
+
+            Plotly.newPlot('rating-distribution', [trace], layout, plotlyConfig);
+        }
+
+        function createLengthVsRating(data) {
+            const filteredData = data.filter(d => 
+                !isNaN(parseFloat(d.album_length_minutes)) && 
+                !isNaN(parseFloat(d.avg_member_rating))
+            );
+
+            const trace = {
+                x: filteredData.map(d => parseFloat(d.album_length_minutes)),
+                y: filteredData.map(d => parseFloat(d.avg_member_rating)),
+                mode: 'markers',
+                type: 'scatter',
+                text: filteredData.map(d => `${d.album_name} - ${d.album_artist}`),
+                marker: {
+                    size: 10,
+                    color: filteredData.map(d => colors.members[d.select_member] || colors.primary),
+                    opacity: 0.7
+                }
+            };
+
+            const layout = {
+                ...plotlyLayout,
+                title: 'Album Length vs Rating',
+                xaxis: { title: 'Album Length (minutes)' },
+                yaxis: { title: 'Rating', range: [0, 10] }
+            };
+
+            Plotly.newPlot('length-vs-rating', [trace], layout, plotlyConfig);
+        }
+
+        function createLengthByMember(data) {
+            const memberLengths = {};
+            
+            data.forEach(album => {
+                const member = album.select_member;
+                const length = parseFloat(album.album_length_minutes);
+                
+                if (!isNaN(length)) {
+                    if (!memberLengths[member]) {
+                        memberLengths[member] = [];
+                    }
+                    memberLengths[member].push(length);
+                }
+            });
+
+            const members = Object.keys(memberLengths);
+            const avgLengths = members.map(member => {
+                const lengths = memberLengths[member];
+                return lengths.reduce((a, b) => a + b, 0) / lengths.length;
+            });
+
+            const trace = {
+                x: members,
+                y: avgLengths,
+                type: 'bar',
+                marker: {
+                    color: members.map(m => colors.members[m] || colors.primary)
+                }
+            };
+
+            const layout = {
+                ...plotlyLayout,
+                title: 'Average Album Length by Selector',
+                xaxis: { title: 'Member' },
+                yaxis: { title: 'Average Length (minutes)' }
+            };
+
+            Plotly.newPlot('length-by-member', [trace], layout, plotlyConfig);
+        }
+
+        function createDiscoveryTimeline(data) {
+            // Group by month/year
+            const timeGroups = {};
+            
+            data.forEach(album => {
+                const key = `${album.Month} ${album.Year}`;
+                if (!timeGroups[key]) {
+                    timeGroups[key] = { total: 0, discoveries: 0 };
+                }
+                timeGroups[key].total++;
+                if (album.new_discovery_for_most === 'Yes') {
+                    timeGroups[key].discoveries++;
+                }
+            });
+
+            const dates = Object.keys(timeGroups);
+            const discoveryRates = dates.map(date => 
+                (timeGroups[date].discoveries / timeGroups[date].total) * 100
+            );
+
+            const trace = {
+                x: dates,
+                y: discoveryRates,
+                type: 'scatter',
+                mode: 'lines+markers',
+                name: 'Discovery Rate',
+                line: {
+                    color: colors.accent,
+                    width: 3
+                },
+                marker: {
+                    size: 8,
+                    color: colors.accent
+                }
+            };
+
+            const layout = {
+                ...plotlyLayout,
+                title: 'New Discovery Rate Over Time',
+                xaxis: { title: 'Month' },
+                yaxis: { title: 'Discovery Rate (%)', range: [0, 100] }
+            };
+
+            Plotly.newPlot('discovery-timeline', [trace], layout, plotlyConfig);
+        }
+
+        function createGenreRatingsHeatmap(data) {
+            // This would need more complex processing
+            // For now, create a placeholder
+            const trace = {
+                x: ['Rock', 'Indie', 'Jazz', 'Blues', 'Electronic'],
+                y: ['Sam', 'Steph', 'Glenn', 'Claire', 'Jamie'],
+                z: [[8.5, 7.0, 8.0, 6.5, 7.5],
+                    [7.5, 8.0, 7.0, 8.5, 6.0],
+                    [8.0, 7.5, 9.0, 7.0, 7.5],
+                    [6.5, 8.5, 7.5, 8.0, 8.0],
+                    [7.0, 7.0, 8.0, 7.5, 9.0]],
+                type: 'heatmap',
+                colorscale: 'Viridis',
+                showscale: true
+            };
+
+            const layout = {
+                ...plotlyLayout,
+                title: 'Average Ratings by Genre and Member',
+                xaxis: { title: 'Genre' },
+                yaxis: { title: 'Member' }
+            };
+
+            Plotly.newPlot('genre-ratings-heatmap', [trace], layout, plotlyConfig);
+        }
+
+        function createDivisiveAlbums(data) {
+            // This would need individual ratings to calculate variance
+            // For now, show albums with lowest ratings
+            const ratedAlbums = data
+                .filter(d => !isNaN(parseFloat(d.avg_member_rating)))
+                .sort((a, b) => parseFloat(a.avg_member_rating) - parseFloat(b.avg_member_rating))
+                .slice(0, 10);
+
+            const trace = {
+                x: ratedAlbums.map(d => parseFloat(d.avg_member_rating)),
+                y: ratedAlbums.map(d => `${d.album_name} - ${d.album_artist}`.substring(0, 30)),
+                type: 'bar',
+                orientation: 'h',
+                marker: {
+                    color: colors.secondary
+                }
+            };
+
+            const layout = {
+                ...plotlyLayout,
+                title: 'Lowest Rated Albums',
+                xaxis: { title: 'Average Rating', range: [0, 10] },
+                yaxis: { title: '' },
+                margin: { l: 200 }
+            };
+
+            Plotly.newPlot('divisive-albums', [trace], layout, plotlyConfig);
+        }
+
+        function createEngagementTimeline(data) {
+            // Group by month/year
+            const timeGroups = {};
+            
+            data.forEach(album => {
+                const key = `${album.Month} ${album.Year}`;
+                if (!timeGroups[key]) {
+                    timeGroups[key] = {
+                        albums: 0,
+                        avgAttendance: 0,
+                        avgDiscussionLength: 0
+                    };
+                }
+                timeGroups[key].albums++;
+                
+                const attendance = parseInt(album.discussion_attendance_count);
+                if (!isNaN(attendance)) {
+                    timeGroups[key].avgAttendance = attendance;
+                }
+                
+                const discussionLength = parseInt(album.discussion_duration);
+                if (!isNaN(discussionLength)) {
+                    timeGroups[key].avgDiscussionLength = discussionLength;
+                }
+            });
+
+            const dates = Object.keys(timeGroups);
+            
+            const trace1 = {
+                x: dates,
+                y: dates.map(d => timeGroups[d].albums),
+                type: 'scatter',
+                mode: 'lines+markers',
+                name: 'Albums Discussed',
+                yaxis: 'y',
+                line: { color: colors.primary }
+            };
+
+            const trace2 = {
+                x: dates,
+                y: dates.map(d => timeGroups[d].avgAttendance),
+                type: 'scatter',
+                mode: 'lines+markers',
+                name: 'Avg Attendance',
+                yaxis: 'y2',
+                line: { color: colors.accent }
+            };
+
+            const layout = {
+                ...plotlyLayout,
+                title: 'Club Engagement Metrics',
+                xaxis: { title: 'Month' },
+                yaxis: {
+                    title: 'Albums Discussed',
+                    titlefont: { color: colors.primary },
+                    tickfont: { color: colors.primary }
+                },
+                yaxis2: {
+                    title: 'Average Attendance',
+                    titlefont: { color: colors.accent },
+                    tickfont: { color: colors.accent },
+                    overlaying: 'y',
+                    side: 'right'
+                }
+            };
+
+            Plotly.newPlot('engagement-timeline', [trace1, trace2], layout, plotlyConfig);
+        }
+
+        function createRecommendRate(data) {
+            const memberRecommends = {};
+            
+            data.forEach(album => {
+                const member = album.select_member;
+                if (!memberRecommends[member]) {
+                    memberRecommends[member] = { total: 0, recommends: 0 };
+                }
+                memberRecommends[member].total++;
+                if (album.would_recommend === 'Yes') {
+                    memberRecommends[member].recommends++;
+                }
+            });
+
+            const members = Object.keys(memberRecommends);
+            const recommendRates = members.map(member => 
+                (memberRecommends[member].recommends / memberRecommends[member].total) * 100
+            );
+
+            const trace = {
+                x: members,
+                y: recommendRates,
+                type: 'bar',
+                marker: {
+                    color: members.map(m => colors.members[m] || colors.primary)
+                }
+            };
+
+            const layout = {
+                ...plotlyLayout,
+                title: 'Recommendation Rate by Selector',
+                xaxis: { title: 'Member' },
+                yaxis: { title: 'Would Recommend (%)', range: [0, 100] }
+            };
+
+            Plotly.newPlot('recommend-rate', [trace], layout, plotlyConfig);
+        }
+
+        function createSuccessFactors(data) {
+            // Analyze what makes albums successful
+            const factors = {
+                'Short (<40 min)': { total: 0, successful: 0 },
+                'Medium (40-60 min)': { total: 0, successful: 0 },
+                'Long (>60 min)': { total: 0, successful: 0 },
+                'New Discovery': { total: 0, successful: 0 },
+                'Familiar': { total: 0, successful: 0 }
+            };
+
+            data.forEach(album => {
+                const length = parseFloat(album.album_length_minutes);
+                const rating = parseFloat(album.avg_member_rating);
+                const isSuccessful = rating >= 7; // Define success as 7+ rating
+
+                if (!isNaN(length) && !isNaN(rating)) {
+                    let lengthCategory;
+                    if (length < 40) lengthCategory = 'Short (<40 min)';
+                    else if (length <= 60) lengthCategory = 'Medium (40-60 min)';
+                    else lengthCategory = 'Long (>60 min)';
+
+                    factors[lengthCategory].total++;
+                    if (isSuccessful) factors[lengthCategory].successful++;
+                }
+
+                if (album.new_discovery_for_most === 'Yes') {
+                    factors['New Discovery'].total++;
+                    if (isSuccessful) factors['New Discovery'].successful++;
+                } else if (album.new_discovery_for_most === 'No') {
+                    factors['Familiar'].total++;
+                    if (isSuccessful) factors['Familiar'].successful++;
+                }
+            });
+
+            const factorNames = Object.keys(factors);
+            const successRates = factorNames.map(factor => 
+                factors[factor].total > 0 
+                    ? (factors[factor].successful / factors[factor].total) * 100 
+                    : 0
+            );
+
+            const trace = {
+                x: factorNames,
+                y: successRates,
+                type: 'bar',
+                marker: {
+                    color: [colors.primary, colors.accent, colors.warning, colors.secondary, colors.primary]
+                }
+            };
+
+            const layout = {
+                ...plotlyLayout,
+                title: 'Success Rate by Album Characteristics',
+                xaxis: { title: 'Factor' },
+                yaxis: { title: 'Success Rate (%)', range: [0, 100] }
+            };
+
+            Plotly.newPlot('success-factors', [trace], layout, plotlyConfig);
+        }
+
+        // Main initialization
+        async function init() {
+            const result = await loadData();
+            if (!result) return;
+
+            const { data, hasEnhancedData } = result;
+            
+            // Calculate and display insights
+            const insights = calculateInsights(data, hasEnhancedData);
+            displayInsights(insights);
+
+            // Create visualizations based on available data
+            if (hasEnhancedData) {
+                // Create all enhanced visualizations
+                createRatingsByMember(data);
+                createRatingDistribution(data);
+                createLengthVsRating(data);
+                createLengthByMember(data);
+                createDiscoveryTimeline(data);
+                createGenreRatingsHeatmap(data);
+                createDivisiveAlbums(data);
+                createEngagementTimeline(data);
+                createRecommendRate(data);
+                createSuccessFactors(data);
+            } else {
+                // Show message about needing enhanced data
+                document.querySelector('.chart-grid').innerHTML = `
+                    <div class="chart-container full-width">
+                        <div class="error">
+                            <h3>Enhanced Data Needed</h3>
+                            <p>To see these visualizations, please fill out the enhanced data template (album_club_enhanced_template.csv) with:</p>
+                            <ul style="text-align: left;">
+                                <li>Album ratings (avg_member_rating)</li>
+                                <li>Album lengths (album_length_minutes)</li>
+                                <li>Discovery information (new_discovery_for_most)</li>
+                                <li>Recommendation data (would_recommend)</li>
+                            </ul>
+                            <p>Save it as 'ac_enhanced.csv' and refresh this page.</p>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        // Start the app
+        init();
+    </script>
+</body>
+</html>

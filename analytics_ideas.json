@@ -1,0 +1,34 @@
+{
+  "Temporal Analysis": [
+    "Album length trends over club lifetime",
+    "Rating patterns by season/month",
+    "Evolution of genre preferences",
+    "New discovery rate over time"
+  ],
+  "Member Insights": [
+    "Consistency score (rating variance per member)",
+    "Discovery champion (who brings most new artists)",
+    "Crowd pleaser (highest average ratings)",
+    "Genre explorer (most diverse selections)",
+    "Engagement score (attendance + participation)"
+  ],
+  "Album Insights": [
+    "Sleeper hits (low familiarity, high rating)",
+    "Divisive albums (high rating variance)",
+    "Gateway albums (led to exploring artist further)",
+    "Perfect length analysis",
+    "Energy progression throughout the year"
+  ],
+  "Group Dynamics": [
+    "Consensus trends over time",
+    "Discussion length vs album complexity",
+    "Theme clustering (what sparks conversation)",
+    "Selection influence patterns"
+  ],
+  "Predictive Features": [
+    "Predict discussion length from album features",
+    "Predict ratings based on selector and genre",
+    "Optimal album characteristics for your group",
+    "Next selection recommendations"
+  ]
+}

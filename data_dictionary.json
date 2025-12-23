@@ -1,0 +1,39 @@
+{
+  "Original Fields": {
+    "Month": "Month of album club meeting",
+    "Year": "Year of album club meeting",
+    "album_name": "Name of the album",
+    "album_artist": "Artist/band name",
+    "album_release_date": "Year album was released",
+    "select_member": "Member who selected this album",
+    "Genre": "Musical genre(s), comma-separated",
+    "score": "Album score/rating (if tracked)",
+    "Blurb": "Brief notes or selection reason"
+  },
+  "Suggested Additions": {
+    "album_length_minutes": "Total album runtime in minutes",
+    "track_count": "Number of tracks on album",
+    "avg_member_rating": "Average rating from all members (1-10)",
+    "individual_ratings": "JSON object with {member: rating}",
+    "discussion_attendance": "List of members who attended discussion",
+    "favorite_tracks": "JSON object with {member: track_name}",
+    "discussion_duration": "Approximate discussion time in minutes",
+    "discussion_themes": "Key topics discussed (comma-separated tags)",
+    "new_discovery_percentage": "% of members who hadn't heard album before",
+    "selector_familiarity": "new/heard_once/familiar/favorite",
+    "would_recommend": "Percentage who would recommend to others",
+    "playlist_position": "Order in monthly Spotify playlist",
+    "days_before_discussion": "Days between adding to playlist and discussion"
+  },
+  "Spotify API Fields": {
+    "spotify_album_id": "Unique Spotify identifier",
+    "spotify_popularity": "Spotify popularity score (0-100)",
+    "spotify_duration_ms": "Exact duration in milliseconds",
+    "danceability": "Spotify danceability score (0-1)",
+    "energy": "Spotify energy score (0-1)",
+    "valence": "Musical positivity score (0-1)",
+    "acousticness": "Spotify acousticness score (0-1)",
+    "instrumentalness": "Likelihood of no vocals (0-1)",
+    "spotify_url": "Direct link to Spotify album"
+  }
+}
